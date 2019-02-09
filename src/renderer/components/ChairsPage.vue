@@ -180,7 +180,7 @@ export default {
       this.dialog = false
     },
     setBoxSize() {
-      this.boxWidth = this.$el.offsetWidth / 18
+      this.boxWidth = this.$el.offsetWidth / 20
     },
     refresh() {
       Object.values(this.chairs).forEach((floor) => {
@@ -208,8 +208,6 @@ export default {
     display:flex;
     position: relative;
     border-radius: 3px;
-    max-width: 60px;
-    max-height: 60px;
     cursor: pointer;
 
     &:hover {
