@@ -1,0 +1,23 @@
+{
+  "editor.tabSize": 2,
+  "eslint.autoFixOnSave": true,
+  "eslint.enable": true,
+  "eslint.nodePath": "./node_modules",
+  "eslint.validate": [
+    {
+      "language": "javascript",
+      "autoFix": true
+    },
+    {
+      "language": "javascriptreact",
+      "autoFix": true
+    },
+    {
+      "language": "html",
+      "autoFix": true
+    }
+  ],
+  "eslint.options": {
+    "configFile": "./.eslintrc.js"
+  }
+}
