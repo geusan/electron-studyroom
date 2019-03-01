@@ -24,7 +24,7 @@
           </v-list-tile>
         </v-list>
       </v-navigation-drawer>
-      <v-container fluid style="margin-top: 48px;" class="white">
+      <v-container fluid style="margin-top: 48px;height: calc(100vh - 48px);width:100vw" class="white">
         <router-view></router-view>
       </v-container>
     </v-app>

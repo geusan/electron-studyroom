@@ -1,53 +1,57 @@
 <template>
-  <div ref="wrapper">
+  <div ref="wrapper" style="height: 100%;width:100%">
     <v-layout align-center>
       <v-spacer></v-spacer>
-      <v-btn color="red darken-2" dark @click="refresh">
+      <v-btn color="red darken-2" dark small @click="refresh">
         <v-icon>refresh</v-icon>
         <span>초기화</span>
       </v-btn>
     </v-layout>
-    <v-layout class="my-4">
-      <v-spacer></v-spacer>
+    <v-layout align-center align-content-center fill-height>
       <v-flex>
-        <v-card>
+        <v-card style="height:100%;width:100%">
           <v-tabs v-model="active" color="white" slider-color="pink">
             <v-tab v-for="(tab, n) in tabs" :key="n" ripple active-class="teal darken-3 white--text">{{ tabsText[n] }}</v-tab>
             <v-tab-item v-for="(tab, n) in tabs" :key="n">
               <v-card-text>
-                <v-layout v-for="( row, rIdx ) in chairs[tabs[active]]" :key="`table-${active}-row-${rIdx}`">
-                  <div  class="text-xs-center chair"
-                        :class="{ teal: col.value > 0 && !col.seated, aisle: col.value === 0, exit: col.value === -1, pink: col.seated }" 
-                        :style="{ width: `${boxWidth}px`, height: `${boxWidth}px`, margin: `${Math.round(boxWidth / 20)}px`}"
-                        v-for="(col, cIdx) in row" 
-                        @click="setChair(col)"
-                        :key="`table-${active}-row-${rIdx}-col-${cIdx}`">
-                    <span :style="{ fontSize: `${boxWidth / 3}px` }">
-                      {{ col.value > 0 ? col.value : '' }}
-                    </span>
-                  </div>
+                <v-layout align-content-center>
+                <v-spacer></v-spacer>
+                <v-flex style="border: 2px dotted rgba(100, 100 ,100, .7);border-radius:5px;">
+                  <v-layout v-for="( row, rIdx ) in chairs[tabs[active]]" :key="`table-${active}-row-${rIdx}`">
+                    <div  class="text-xs-center chair"
+                          :class="{ teal: col.value > 0 && !col.seated, aisle: col.value === 0, exit: col.value === -1, pink: col.seated }" 
+                          :style="{ width: `${boxWidth}px`, height: `${boxWidth}px`, margin: `${Math.round(boxWidth / 20)}px`}"
+                          v-for="(col, cIdx) in row" 
+                          @click="setChair(col)"
+                          :key="`table-${active}-row-${rIdx}-col-${cIdx}`">
+                      <span :style="{ fontSize: `${boxWidth / 3}px` }">
+                        {{ col.value > 0 ? col.value : '' }}
+                      </span>
+                    </div>
+                  </v-layout>
+                </v-flex>
+                <v-spacer></v-spacer>
                 </v-layout>
               </v-card-text>
             </v-tab-item>
           </v-tabs>
           <v-card-actions>
             <div class="legend">
-              <div :style="{ width: `${boxWidth / 2.5}px`, height: `${boxWidth / 2.5}px`, margin: `${Math.round(boxWidth / 20)}px`}" class="teal legend"></div>
+              <div :style="{ width: `${boxWidth / 1.5}px`, height: `${boxWidth / 1.5}px`, margin: `${Math.round(boxWidth / 20)}px`}" class="teal legend"></div>
               <h3>공석({{vacantChairs}})</h3>
             </div>
             <div class="legend">
-              <div :style="{ width: `${boxWidth / 2.5}px`, height: `${boxWidth / 2.5}px`, margin: `${Math.round(boxWidth / 20)}px`}" class="pink legend"></div>
+              <div :style="{ width: `${boxWidth / 1.5}px`, height: `${boxWidth / 1.5}px`, margin: `${Math.round(boxWidth / 20)}px`}" class="pink legend"></div>
               <h3>사용중({{seatedChairs}})</h3>
             </div>
             <div class="legend">
-              <div :style="{ width: `${boxWidth / 2.5}px`, height: `${boxWidth / 2.5}px`, margin: `${Math.round(boxWidth / 20)}px`}" class="black legend"></div>
+              <div :style="{ width: `${boxWidth / 1.5}px`, height: `${boxWidth / 1.5}px`, margin: `${Math.round(boxWidth / 20)}px`}" class="black legend"></div>
               <h3>출입구</h3>
             </div>
             <v-spacer></v-spacer>
           </v-card-actions>
         </v-card>
       </v-flex>
-      <v-spacer></v-spacer>
     </v-layout>
 
 
@@ -142,8 +146,8 @@ export default {
     };
   },
   created() {
-    this.chairs.male = this.charisToData(this.chairs.male)
-    this.chairs.female = this.charisToData(this.chairs.female)
+    this.chairs.male = this.chairsToData(this.chairs.male)
+    this.chairs.female = this.chairsToData(this.chairs.female)
   },
   mounted() {
     this.setBoxSize()
@@ -168,7 +172,7 @@ export default {
     },
   },
   methods: {
-    charisToData(chairs) {
+    chairsToData(chairs) {
       return chairs.map(d => d.map(c => ({ value: c, seated: false })))
     },
     setChair(chair) {
@@ -180,7 +184,8 @@ export default {
       this.dialog = false
     },
     setBoxSize() {
-      this.boxWidth = this.$el.offsetWidth / 20
+      console.log(this.$el, this.$el.offsetWidth, this.$el.offsetHeight)
+      this.boxWidth = Math.min(this.$el.offsetWidth, this.$el.offsetHeight) / 12
     },
     refresh() {
       Object.values(this.chairs).forEach((floor) => {
