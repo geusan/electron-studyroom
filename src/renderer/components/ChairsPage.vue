@@ -24,7 +24,7 @@
                           v-for="(col, cIdx) in row" 
                           @click="setChair(col)"
                           :key="`table-${active}-row-${rIdx}-col-${cIdx}`">
-                      <span :style="{ fontSize: `${boxWidth / 3}px` }">
+                      <span :style="{ fontSize: `${Math.max(boxWidth / 3, 25)}px` }">
                         {{ col.value > 0 ? col.value : '' }}
                       </span>
                     </div>
