@@ -17,7 +17,7 @@
                 <v-layout align-content-center>
                 <v-spacer></v-spacer>
                 <v-flex style="border: 2px dotted rgba(100, 100 ,100, .7);border-radius:5px;">
-                  <v-layout v-for="( row, rIdx ) in room.chairs" :key="`table-${active}-row-${rIdx}`">
+                  <v-layout v-for="( row, rIdx ) in room.chairs" :key="`table-${active}-row-${rIdx}`" justify-center>
                     <div  class="text-xs-center chair"
                           :class="{ teal: col.value > 0 && !col.seated, aisle: col.value === 0, exit: col.value === -1, pink: col.seated }" 
                           :style="{ width: `${boxWidth}px`, height: `${boxWidth}px`, margin: `${Math.round(boxWidth / 20)}px`}"
@@ -81,34 +81,6 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    
-    
-
-    <!-- <v-tabs
-      v-model="active"
-      color="cyan"
-      dark
-      slider-color="yellow"
-    >
-      <v-tab
-        v-for="n in 3"
-        :key="n"
-        ripple
-      >
-        Item {{ n }}
-
-      </v-tab>
-      <v-tab-item
-        v-for="n in 3"
-        :key="n"
-      >
-        <v-card flat>
-          <v-card-text>{{ text }}</v-card-text>
-        </v-card>
-      </v-tab-item>
-    </v-tabs> -->
-
-
   </div>
 </template>
 
@@ -122,7 +94,7 @@ export default {
       dialog: false,
       selectedChairOrigin: null,
       rooms: rooms.map(room => ({ ...room, chairs: this.chairsToData(room.chairs) })),
-      boxWidth: 100,
+      boxWidth: 60,
     };
   },
   mounted() {
@@ -163,11 +135,13 @@ export default {
       this.dialog = false
     },
     setBoxSize() {
-      this.boxWidth = Math.min(this.$el.offsetWidth, this.$el.offsetHeight) / 12
+      let width = Math.min(this.$el.offsetWidth, this.$el.offsetHeight) / 1.5
+      width /= this.activeRoom.chairs.length
+      this.boxWidth = width
     },
     refresh() {
-      Object.values(this.chairs).forEach((floor) => {
-        floor.forEach((row) => {
+      this.rooms.forEach((room) => {
+        room.chairs.forEach((row) => {
           row.forEach((col) => {
             col.seated = false
           })
