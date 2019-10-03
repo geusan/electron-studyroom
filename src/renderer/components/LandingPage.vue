@@ -10,29 +10,35 @@
     </v-layout>
     <v-layout justify-center>
       <h1>
-        독서실 자리 배정 프로그램
+        {{ info.program.title }}
       </h1>
     </v-layout>
+      <h4 class="grey--text text--darken-2">
+        {{ info.program.location }}
+      </h4>
 
     <v-layout justify-center>
       <v-btn to="/chairs" color="primary" large>좌석 선택</v-btn>
     </v-layout>
     
     <v-layout justify-center class="my-5">
-      <p>만든이: <b>임수근</b> </p>
+      <p>만든이: <b>{{ info.program.author }}</b> </p>
     </v-layout>
     <v-layout class="red--text darken-2">
-      <b>주의) 프로그램 종료시 데이터가 삭제됩니다.</b>
+      <b>{{ info.program.description }}</b>
     </v-layout>
   </v-layout>
 </template>
 
 <script>
   import SystemInformation from './LandingPage/SystemInformation';
-
+  import info from '../assets/info.json'
   export default {
     name: 'landing-page',
     components: { SystemInformation },
+    data: () => ({
+      info,
+    }),
     methods: {
       open(link) {
         // this.$electron.link
