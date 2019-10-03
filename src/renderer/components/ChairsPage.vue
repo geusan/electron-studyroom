@@ -11,13 +11,13 @@
       <v-flex>
         <v-card style="height:100%;width:100%">
           <v-tabs v-model="active" color="white" slider-color="pink">
-            <v-tab v-for="(tab, n) in tabs" :key="n" ripple active-class="teal darken-3 white--text">{{ tabsText[n] }}</v-tab>
-            <v-tab-item v-for="(tab, n) in tabs" :key="n">
+            <v-tab v-for="room in rooms" :key="room.key" ripple active-class="teal darken-3 white--text">{{ room.title }}</v-tab>
+            <v-tab-item v-for="room in rooms" :key="room.key">
               <v-card-text>
                 <v-layout align-content-center>
                 <v-spacer></v-spacer>
                 <v-flex style="border: 2px dotted rgba(100, 100 ,100, .7);border-radius:5px;">
-                  <v-layout v-for="( row, rIdx ) in chairs[tabs[active]]" :key="`table-${active}-row-${rIdx}`">
+                  <v-layout v-for="( row, rIdx ) in room.chairs" :key="`table-${active}-row-${rIdx}`">
                     <div  class="text-xs-center chair"
                           :class="{ teal: col.value > 0 && !col.seated, aisle: col.value === 0, exit: col.value === -1, pink: col.seated }" 
                           :style="{ width: `${boxWidth}px`, height: `${boxWidth}px`, margin: `${Math.round(boxWidth / 20)}px`}"
@@ -70,7 +70,7 @@
         </v-toolbar>
         <v-card-text class="text-xs-center py-5">
           <h3>
-            {{ tabsText[active] }} 의 {{ selectedChair.value }}번 자리를 {{ !selectedChair.seated ? '입석' : '공석' }} 처리 하시겠습니까?
+            {{ (activeRoom || {}).title }} 의 {{ selectedChair.value }}번 자리를 {{ !selectedChair.seated ? '입석' : '공석' }} 처리 하시겠습니까?
           </h3>
         </v-card-text>
         <v-divider></v-divider>
@@ -113,59 +113,38 @@
 </template>
 
 <script>
+import rooms from '../assets/rooms.json'
 export default {
   name: 'chairs-page',
   data() {
     return {
-      active: null,
+      active: 0,
       dialog: false,
-      tabs: ['male', 'female'],
-      tabsText: ['남자층(3층)', '여자층(2층)'],
       selectedChairOrigin: null,
-      chairs: {
-        male: [
-          [0, 38, 33, 0, 32, 29, 0, 28, 23, 0, 22, 11, 0, 10, 1, 0],
-          [0, 37, 34, 0, 31, 30, 0, 27, 24, 0, 21, 12, 0, 9, 2, 0],
-          [0, 36, 35, 0, 0, 0, 0, 26, 25, 0, 20, 13, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 19, 14, 0, 8, 3, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 18, 15, 0, 7, 4, 0],
-          [0, 0, 0, 0, -1, -1, 0, 0, 0, 0, 17, 16, 0, 6, 5, 0],
-        ],
-        female: [
-          [0, 40, 35, 0, 34, 31, 0, 30, 25, 0, 24, 13, 0, 12, 1, 0],
-          [0, 39, 36, 0, 33, 32, 0, 29, 26, 0, 23, 14, 0, 11, 2, 0],
-          [0, 38, 37, 0, 0, 0, 0, 28, 27, 0, 22, 15, 0, 10, 3, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 21, 16, 0, 9, 4, 0],
-          [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 20, 17, 0, 8, 5, 0],
-          [0, 0, 0, 0, -1, -1, 0, 0, 0, 0, 19, 18, 0, 7, 6, 0],
-        ],
-      },
+      rooms: rooms.map(room => ({ ...room, chairs: this.chairsToData(room.chairs) })),
       boxWidth: 100,
     };
-  },
-  created() {
-    this.chairs.male = this.chairsToData(this.chairs.male)
-    this.chairs.female = this.chairsToData(this.chairs.female)
   },
   mounted() {
     this.setBoxSize()
   },
   computed: {
+    activeRoom() {
+      return this.rooms[this.active]
+    },
     selectedChair() {
       return this.selectedChairOrigin ? this.selectedChairOrigin : {}
     },
     vacantChairs() {
-      if (typeof this.active === 'number' && this.tabs[this.active]) {
-        return this.chairs[this.tabs[this.active]]
+      if (this.activeRoom) {
+        return this.activeRoom.chairs
           .reduce((cnt, row) => cnt + row.reduce((a, b) => a + (b.value > 0 && !b.seated), 0), 0)
       }
       return 0
     },
     seatedChairs() {
-      if (typeof this.active === 'number' && this.tabs[this.active]) {
-        return this.chairs[this.tabs[this.active]]
+      if (this.activeRoom) {
+        return this.activeRoom.chairs
           .reduce((cnt, row) => cnt + row.reduce((a, b) => a + (b.value > 0 && b.seated), 0), 0)
       }
       return 0
@@ -184,7 +163,6 @@ export default {
       this.dialog = false
     },
     setBoxSize() {
-      console.log(this.$el, this.$el.offsetWidth, this.$el.offsetHeight)
       this.boxWidth = Math.min(this.$el.offsetWidth, this.$el.offsetHeight) / 12
     },
     refresh() {
