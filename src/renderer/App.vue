@@ -1,6 +1,6 @@
 <template>
     <v-app>
-      <v-toolbar app card dense color="primary" dark clipped-left>
+      <v-toolbar app absolute card dense color="primary" dark clipped-left>
         <v-toolbar-side-icon @click="drawer = !drawer">
           <v-icon>menu</v-icon>
         </v-toolbar-side-icon>
@@ -24,7 +24,7 @@
           </v-list-tile>
         </v-list>
       </v-navigation-drawer>
-      <v-container fluid style="margin-top: 48px;height: calc(100vh - 48px);width:100vw;padding:6px" class="white">
+      <v-container fluid style="margin-top: 48px;max-height: calc(100vh - 48px);width:100vw;padding:6px" class="white">
         <router-view></router-view>
       </v-container>
     </v-app>

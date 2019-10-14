@@ -1,22 +1,41 @@
 <template>
   <div ref="wrapper" style="height: 100%;width:100%">
-    <v-layout align-center>
-      <v-spacer></v-spacer>
-      <v-btn color="red darken-2" dark small @click="refresh">
-        <v-icon>refresh</v-icon>
-        <span>초기화</span>
-      </v-btn>
-    </v-layout>
-    <v-layout align-center align-content-center fill-height>
+    <v-layout fill-height>
+      <div style="height:100%;min-width:162px;">
+        <v-layout column fill-height>
+          <v-spacer></v-spacer>
+          <div class="legend">
+            <div :style="{ width: `${boxWidth / 1.5}px`, height: `${boxWidth / 1.5}px`, margin: `${Math.round(boxWidth / 20)}px`}" class="teal legend"></div>
+            <h3>빈자리({{vacantChairs}})</h3>
+          </div>
+          <div class="legend">
+            <div :style="{ width: `${boxWidth / 1.5}px`, height: `${boxWidth / 1.5}px`, margin: `${Math.round(boxWidth / 20)}px`}" class="pink legend"></div>
+            <h3>사용중({{seatedChairs}})</h3>
+          </div>
+          <div class="legend">
+            <div :style="{ width: `${boxWidth / 1.5}px`, height: `${boxWidth / 1.5}px`, margin: `${Math.round(boxWidth / 20)}px`}" class="black legend"></div>
+            <h3>출입구</h3>
+          </div>
+          <v-spacer></v-spacer>
+          <div class="legent">
+            <v-btn color="red darken-2" dark small @click="refresh">
+              <v-icon>refresh</v-icon>
+              <span>초기화</span>
+            </v-btn>
+          </div>
+        </v-layout>
+      </div>
       <v-flex>
-        <v-card style="height:100%;width:100%">
+        <v-card class="mx-2" style="height:100%" ref="chair-container">
           <v-tabs v-model="active" color="white" slider-color="pink">
-            <v-tab v-for="room in rooms" :key="room.key" ripple active-class="teal darken-3 white--text">{{ room.title }}</v-tab>
+            <template v-if="rooms.length > 1">
+              <v-tab v-for="room in rooms" :key="room.key" ripple active-class="teal darken-3 white--text">{{ room.title }}</v-tab>
+            </template>
             <v-tab-item v-for="room in rooms" :key="room.key">
-              <v-card-text>
-                <v-layout align-content-center>
+              <v-card-text style="min-height:100%">
+                <v-layout align-content-center fill-height>
                 <v-spacer></v-spacer>
-                <v-flex style="border: 2px dotted rgba(100, 100 ,100, .7);border-radius:5px;">
+                <v-flex style="border: 2px dotted rgba(100, 100 ,100, .7);border-radius:5px;height:100%;">
                   <v-layout v-for="( row, rIdx ) in room.chairs" :key="`table-${active}-row-${rIdx}`" justify-center>
                     <div  class="text-xs-center chair"
                           :class="{ teal: col.value > 0 && !col.seated, aisle: col.value === 0, exit: col.value === -1, pink: col.seated }" 
@@ -24,7 +43,7 @@
                           v-for="(col, cIdx) in row" 
                           @click="setChair(col)"
                           :key="`table-${active}-row-${rIdx}-col-${cIdx}`">
-                      <span :style="{ fontSize: `${Math.max(boxWidth / 3, 20)}px` }">
+                      <span :style="{ fontSize: `${Math.max(boxWidth / 2, 20)}px` }">
                         {{ col.value > 0 ? col.value : '' }}
                       </span>
                     </div>
@@ -35,21 +54,6 @@
               </v-card-text>
             </v-tab-item>
           </v-tabs>
-          <v-card-actions>
-            <div class="legend">
-              <div :style="{ width: `${boxWidth / 1.5}px`, height: `${boxWidth / 1.5}px`, margin: `${Math.round(boxWidth / 20)}px`}" class="teal legend"></div>
-              <h3>공석({{vacantChairs}})</h3>
-            </div>
-            <div class="legend">
-              <div :style="{ width: `${boxWidth / 1.5}px`, height: `${boxWidth / 1.5}px`, margin: `${Math.round(boxWidth / 20)}px`}" class="pink legend"></div>
-              <h3>사용중({{seatedChairs}})</h3>
-            </div>
-            <div class="legend">
-              <div :style="{ width: `${boxWidth / 1.5}px`, height: `${boxWidth / 1.5}px`, margin: `${Math.round(boxWidth / 20)}px`}" class="black legend"></div>
-              <h3>출입구</h3>
-            </div>
-            <v-spacer></v-spacer>
-          </v-card-actions>
         </v-card>
       </v-flex>
     </v-layout>
@@ -100,6 +104,12 @@ export default {
   mounted() {
     this.setBoxSize()
   },
+  watch: {
+    active() {
+      console.log('active is changed')
+      this.setBoxSize();
+    },
+  },
   computed: {
     activeRoom() {
       return this.rooms[this.active]
@@ -135,9 +145,11 @@ export default {
       this.dialog = false
     },
     setBoxSize() {
-      let width = Math.min(this.$el.offsetWidth, this.$el.offsetHeight) / 1.5
-      width /= this.activeRoom.chairs.length
-      this.boxWidth = width
+      const chairContainer = this.$refs['chair-container'];
+      const width = chairContainer ?
+        Math.min(chairContainer.$el.clientWidth, chairContainer.$el.clientHeight) :
+        Math.min(this.$el.offsetHeight, this.$el.clientWidth)
+      this.boxWidth = (width - 254) / this.activeRoom.chairs.length
     },
     refresh() {
       this.rooms.forEach((room) => {
@@ -206,7 +218,7 @@ export default {
   .legend {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: left;
     margin: 0 15px;
 
     div {
