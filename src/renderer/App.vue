@@ -5,7 +5,7 @@
           <v-icon>menu</v-icon>
         </v-toolbar-side-icon>
         <v-toolbar-title>
-          양천 청소년 독서실
+          {{ info.program.location }} {{ info.program.title }}
         </v-toolbar-title>
       </v-toolbar>
 
@@ -31,10 +31,12 @@
 </template>
 
 <script>
+  import info from './assets/info.json'
   export default {
     name: 'electron-studyroom',
     data: () => ({
       drawer: false,
+      info,
     }),
   };
 </script>
