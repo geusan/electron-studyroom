@@ -170,7 +170,7 @@ export default {
       const width = chairContainer ?
         Math.min(chairContainer.$el.clientWidth, chairContainer.$el.clientHeight) :
         Math.min(this.$el.offsetHeight, this.$el.clientWidth)
-      this.boxWidth = (width - 84) / this.activeRoom.chairs.length
+      this.boxWidth = (width - 124) / this.activeRoom.chairs.length
     },
     refresh() {
       this.rooms.forEach((room) => {
