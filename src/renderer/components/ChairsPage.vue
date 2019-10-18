@@ -1,7 +1,8 @@
 <template>
   <div ref="wrapper" style="height: 100%;width:100%">
     <v-layout fill-height>
-      <div style="height:100%;min-width:162px;">
+      <v-spacer />
+      <v-flex style="height:100%;max-width:250px;">
         <v-layout column fill-height>
           <v-spacer></v-spacer>
           <div class="legend">
@@ -17,14 +18,8 @@
             <h3>출입구</h3>
           </div>
           <v-spacer></v-spacer>
-          <div class="legent">
-            <v-btn color="red darken-2" dark small @click="refresh">
-              <v-icon>refresh</v-icon>
-              <span>초기화</span>
-            </v-btn>
-          </div>
         </v-layout>
-      </div>
+      </v-flex>
       <v-flex>
         <v-card class="mx-2" style="height:100%" ref="chair-container">
           <template v-if="rooms.length > 1">
@@ -78,6 +73,15 @@
           </template>
         </v-card>
       </v-flex>
+      <v-spacer />
+      <div>
+        <div class="legent">
+            <v-btn color="red darken-2" dark small @click="refresh">
+              <v-icon>refresh</v-icon>
+              <span>초기화</span>
+            </v-btn>
+          </div>
+      </div>
     </v-layout>
 
 
@@ -244,6 +248,9 @@ export default {
 
     div {
       border-radius: 3px;
+    }
+    h3 {
+      font-size: 2em;
     }
   }
 </style>
