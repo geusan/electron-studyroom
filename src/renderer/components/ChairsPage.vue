@@ -21,57 +21,60 @@
         </v-layout>
       </v-flex>
       <v-flex>
-        <v-card class="mx-2" style="height:100%" ref="chair-container">
-          <template v-if="rooms.length > 1">
-            <v-tabs v-model="active" color="white" slider-color="pink">
-              <v-tab v-for="room in rooms" :key="room.key" ripple active-class="teal darken-3 white--text">{{ room.title }}</v-tab>
-            </v-tabs>
-            <v-tab-item v-for="room in rooms" :key="room.key">
-              <v-card-text style="min-height:100%">
-                <v-layout align-content-center fill-height>
-                <v-spacer></v-spacer>
-                <v-flex style="border: 2px dotted rgba(100, 100 ,100, .7);border-radius:5px;height:100%;">
-                  <v-layout v-for="( row, rIdx ) in room.chairs" :key="`table-${active}-row-${rIdx}`" justify-center>
-                    <div  class="text-xs-center chair"
-                          :class="{ teal: col.value > 0 && !col.seated, aisle: col.value === 0, exit: col.value === -1, pink: col.seated }" 
-                          :style="{ width: `${boxWidth}px`, height: `${boxWidth}px`, margin: `${Math.round(boxWidth / 20)}px`}"
-                          v-for="(col, cIdx) in row" 
-                          @click="setChair(col)"
-                          :key="`table-${active}-row-${rIdx}-col-${cIdx}`">
-                      <span :style="{ fontSize: `${Math.max(boxWidth / 2, 20)}px` }">
-                        {{ col.value > 0 ? col.value : '' }}
-                      </span>
-                    </div>
+        <v-layout align-center justify-center fill-height>
+          <v-card class="mx-2" ref="chair-container">
+            <template v-if="rooms.length > 1">
+              <v-tabs v-model="active" color="white" slider-color="pink">
+                <v-tab v-for="room in rooms" :key="room.key" ripple active-class="teal darken-3 white--text">{{ room.title }}</v-tab>
+              </v-tabs>
+              <v-tab-item v-for="room in rooms" :key="room.key">
+                <v-card-text>
+                  <v-layout align-content-center fill-height>
+                  <v-spacer />
+                  <v-flex style="border: 2px dotted rgba(100, 100 ,100, .7);border-radius:5px;height:100%;">
+                    <v-layout v-for="( row, rIdx ) in room.chairs" :key="`table-${active}-row-${rIdx}`" justify-center>
+                      <div  class="text-xs-center chair"
+                            :class="{ teal: col.value > 0 && !col.seated, aisle: col.value === 0, exit: col.value === -1, pink: col.seated }" 
+                            :style="{ width: `${boxWidth}px`, height: `${boxWidth}px`, margin: `${Math.round(boxWidth / 20)}px`}"
+                            v-for="(col, cIdx) in row" 
+                            @click="setChair(col)"
+                            :key="`table-${active}-row-${rIdx}-col-${cIdx}`">
+                        <span :style="{ fontSize: `${Math.max(boxWidth / 2, 20)}px` }">
+                          {{ col.value > 0 ? col.value : '' }}
+                        </span>
+                      </div>
+                    </v-layout>
+                  </v-flex>
+                  <v-spacer />
                   </v-layout>
-                </v-flex>
-                <v-spacer></v-spacer>
+                </v-card-text>
+              </v-tab-item>
+            </template>
+            <template v-else>
+              <v-card-text>
+                <v-layout>
+                  <v-spacer />
+                  <v-flex style="border: 2px dotted rgba(100, 100 ,100, .7);border-radius:5px;height:100%;">
+                    <v-layout v-for="( row, rIdx ) in rooms[0].chairs" :key="`table-${active}-row-${rIdx}`" justify-center>
+                      <div  class="text-xs-center chair"
+                            :class="{ teal: col.value > 0 && !col.seated, aisle: col.value === 0, exit: col.value === -1, pink: col.seated }" 
+                            :style="{ width: `${boxWidth}px`, height: `${boxWidth}px`, margin: `${Math.round(boxWidth / 20)}px`}"
+                            v-for="(col, cIdx) in row" 
+                            @click="setChair(col)"
+                            :key="`table-${active}-row-${rIdx}-col-${cIdx}`">
+                        <span :style="{ fontSize: `${Math.max(boxWidth / 2, 20)}px` }">
+                          {{ col.value > 0 ? col.value : '' }}
+                        </span>
+                      </div>
+                    </v-layout>
+                  </v-flex>
+                  <v-spacer />
                 </v-layout>
               </v-card-text>
-            </v-tab-item>
-          </template>
-          <template v-else>
-            <v-card-text style="min-height:100%">
-              <v-layout align-content-center fill-height>
-              <v-spacer></v-spacer>
-              <v-flex style="border: 2px dotted rgba(100, 100 ,100, .7);border-radius:5px;height:100%;">
-                <v-layout v-for="( row, rIdx ) in rooms[0].chairs" :key="`table-${active}-row-${rIdx}`" justify-center>
-                  <div  class="text-xs-center chair"
-                        :class="{ teal: col.value > 0 && !col.seated, aisle: col.value === 0, exit: col.value === -1, pink: col.seated }" 
-                        :style="{ width: `${boxWidth}px`, height: `${boxWidth}px`, margin: `${Math.round(boxWidth / 20)}px`}"
-                        v-for="(col, cIdx) in row" 
-                        @click="setChair(col)"
-                        :key="`table-${active}-row-${rIdx}-col-${cIdx}`">
-                    <span :style="{ fontSize: `${Math.max(boxWidth / 2, 20)}px` }">
-                      {{ col.value > 0 ? col.value : '' }}
-                    </span>
-                  </div>
-                </v-layout>
-              </v-flex>
-              <v-spacer></v-spacer>
-              </v-layout>
-            </v-card-text>
-          </template>
-        </v-card>
+            </template>
+          </v-card>
+
+        </v-layout>
       </v-flex>
       <v-spacer />
       <div>
@@ -174,7 +177,7 @@ export default {
       const width = chairContainer ?
         Math.min(chairContainer.$el.clientWidth, chairContainer.$el.clientHeight) :
         Math.min(this.$el.offsetHeight, this.$el.clientWidth)
-      this.boxWidth = (width - 124) / this.activeRoom.chairs.length
+      this.boxWidth = (width - 24) / this.activeRoom.chairs.length
     },
     refresh() {
       this.rooms.forEach((room) => {
