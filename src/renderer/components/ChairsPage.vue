@@ -35,12 +35,13 @@
                     <v-layout v-for="( row, rIdx ) in room.chairs" :key="`table-${active}-row-${rIdx}`" justify-center>
                       <div  class="text-xs-center chair"
                             :class="{ teal: col.value > 0 && !col.seated, aisle: col.value === 0, exit: col.value === -1, pink: col.seated }" 
-                            :style="{ width: `${boxWidth}px`, height: `${boxWidth}px`, margin: `${Math.round(boxWidth / 20)}px`}"
+                            :style="{ width: `${boxWidth}px`, height: `${col.value === 0 ? 10 : boxWidth}px`, margin: `${Math.round(boxWidth / 20)}px`}"
                             v-for="(col, cIdx) in row" 
                             @click="setChair(col)"
                             :key="`table-${active}-row-${rIdx}-col-${cIdx}`">
                         <span :style="{ fontSize: `${Math.max(boxWidth / 2, 20)}px` }">
-                          {{ col.value > 0 ? col.value : '' }}
+                          <!-- {{ col.value > 0 ? col.value : '' }} -->
+                          {{ boxWidth / 2 }}
                         </span>
                       </div>
                     </v-layout>
@@ -58,7 +59,7 @@
                     <v-layout v-for="( row, rIdx ) in rooms[0].chairs" :key="`table-${active}-row-${rIdx}`" justify-center>
                       <div  class="text-xs-center chair"
                             :class="{ teal: col.value > 0 && !col.seated, aisle: col.value === 0, exit: col.value === -1, pink: col.seated }" 
-                            :style="{ width: `${boxWidth}px`, height: `${boxWidth}px`, margin: `${Math.round(boxWidth / 20)}px`}"
+                            :style="{ width: `${boxWidth}px`, height: `${col.value ? boxWidth : boxWidth / 2}px`, margin: `${Math.round(boxWidth / 20)}px`}"
                             v-for="(col, cIdx) in row" 
                             @click="setChair(col)"
                             :key="`table-${active}-row-${rIdx}-col-${cIdx}`">
@@ -177,7 +178,7 @@ export default {
       const width = chairContainer ?
         Math.min(chairContainer.$el.clientWidth, chairContainer.$el.clientHeight) :
         Math.min(this.$el.offsetHeight, this.$el.clientWidth)
-      this.boxWidth = (width - 24) / this.activeRoom.chairs.length
+      this.boxWidth = Math.max(width / this.activeRoom.chairs.length, 48)
     },
     refresh() {
       this.rooms.forEach((room) => {

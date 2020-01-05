@@ -29,7 +29,7 @@
     "postinstall": "npm run lint:fix"
   },
   "build": {
-    "productName": "독서실 자리배정 프로그렘",
+    "productName": "독서실 자리배정 프로그램",
     "appId": "com.geusan.studyroom",
     "directories": {
       "output": "build"
